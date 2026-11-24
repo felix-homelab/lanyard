@@ -48,7 +48,7 @@ in `src/lanyard/root.py`; it remains subject to `--allow-root` and serial policy
 
 ## What Lanyard deliberately does not do
 
-- ship an exploit
+- ship an exploit in the host package
 - use a hidden persistence mechanism
 - grant root through the MCP server itself
 - pretend a temporary init shell is a general root plane
@@ -56,3 +56,9 @@ in `src/lanyard/root.py`; it remains subject to `--allow-root` and serial policy
 For research devices with a custom exploit chain, the correct integration is an
 external root provider that yields a real domain, not a workaround inside the
 MCP protocol.
+
+A separate, debug-only lab runner under [`device-app/`](../device-app/README.md)
+can stage the Open Crown page-cache payload on the exact verified A52. It is not
+a root provider, the MCP server does not install or call it, and the relay it
+stages remains a temporary init-domain artifact. Treat it as a hardware
+experiment, not as Lanyard root.

@@ -8,8 +8,10 @@
 > explicit policy gate.
 
 Lanyard is for **your own devices, lab devices, and devices you are explicitly
-authorized to administer**. It is not a stealth tool and does not bundle an
-Android exploit.
+authorized to administer**. The host tool is not a stealth tool. A separate,
+debug-only lab runner under [`device-app/`](device-app/README.md) packages a
+public Open Crown page-cache payload for the verified A52; it is manually
+installed and is not part of the MCP server.
 
 ## Why it exists
 
@@ -100,10 +102,61 @@ in this first surface.
 
 See [docs/MCP.md](docs/MCP.md).
 
+## Device payload runner (lab, separate)
+
+[`device-app/`](device-app/README.md) is a debug-only Android app that stages the
+Open Crown page-cache payloads on the exact SM-A528B / `A528BXXSBGYI3` /
+`5.4.254-qgki` build. It is not installed, started, or called by the Lanyard MCP
+server, and it is not a root provider for the host.
+
+It matches the payload manifest row exactly, requires an on-device consent
+gesture for every run, and only stages the payload. The init relay is triggered
+from the shell, where the relay is reachable; the app cannot connect to it. The
+first execution can consume init's logging thread and reset the phone. It is
+deployed on the lab A52 as `dev.lanyard.payload`.
+
+The 0.2.0 runner is a Compose app: a verified-target gate, a press-and-hold arm
+gesture followed by a consent sheet, a classified run log and an About tab with
+the packaged payload hashes. The redesign changes presentation only — payload
+bytes, the native relay and the target rules are untouched, and the manifest
+match now checks the ABI, SDK floor and kernel family before it accepts a
+verified row.
+
+Build, install, observed evidence, provenance and limits:
+[device-app/README.md](device-app/README.md).
+
+## Research bench
+
+This repository is also a bench. CVE reproductions, payloads and
+post-exploitation primitives are developed here, on hardware the operator owns,
+and every attempt stays on the record. Three rules:
+
+1. **Authorized targets only.** A payload is gated to an exact measured device
+   row. Nothing is written for a device you do not own or administer.
+2. **Everything tried is documented**, including failures, dead ends and shelved
+   ideas. An undocumented attempt is a defect.
+3. **Payloads are first-party.** Each payload lives here and carries a
+   `dev.lanyard.payload.*` id. Derived work keeps its upstream id, project and
+   commit in the manifest `upstream` block, but it is not shipped under someone
+   else's name.
+
+| Record | Purpose |
+| --- | --- |
+| [`docs/RESEARCH.md`](docs/RESEARCH.md) | protocol: authorization, attempt lifecycle, naming, evidence rules, disclosure, cleanup, definition of done |
+| [`docs/DEVICES.md`](docs/DEVICES.md) | bench inventory: model, codename, build, kernel, SoC, security state and gate row per device |
+| [`docs/CVES.md`](docs/CVES.md) | CVE register: attribution per payload, affected range, fix, disclosure state, or an explicit "none claimed" |
+| [`docs/PAYLOADS.md`](docs/PAYLOADS.md) | registry of every payload: target rows, capabilities, hashes, limits |
+| [`docs/RESEARCH_LOG.md`](docs/RESEARCH_LOG.md) | append-only log of attempts, negative results included |
+| [`docs/evidence/`](docs/evidence/) | one entry per measured claim: device facts, raw output, artifact hashes |
+| [`docs/payloads/`](docs/payloads/) | one README per payload: hypothesis, procedure, trigger, cleanup |
+
+The bench does not change the host contract: the MCP server still ships no
+exploit, and the lab runner still stages rather than consumes its relay.
+
 ## Root model
 
-Lanyard does **not** ship a privilege-escalation exploit. Root is provided by
-the device:
+The Lanyard host package does **not** ship a privilege-escalation exploit. Root
+is provided by the device:
 
 - **`su` provider** — an existing Magisk/KernelSU/APatch `su` binary.
 - **`adb root` provider** — only for debuggable/userdebug builds where the
@@ -115,6 +168,10 @@ the UID/context and refuse to call it a root plane. That is deliberate: a shell
 that cannot create a Bluetooth socket or change SELinux context is not the same
 as rooted Android.
 
+The separate lab runner in `device-app/` is not a root provider. It stages an
+Open Crown payload that yields a temporary init-domain relay; the host still
+reports that as a limited context, not as a general root plane.
+
 See [docs/ROOTING.md](docs/ROOTING.md).
 
 ## Safety contract
@@ -125,7 +182,12 @@ See [docs/ROOTING.md](docs/ROOTING.md).
 - Commands have timeouts and output caps.
 - Privileged actions are hashed into a JSONL audit log.
 - No persistence, no boot integration, no hidden daemon.
-- No exploit code is included.
+- The host package contains no exploit code.
+- The separate `device-app/` lab runner is debug-only, exact-target,
+  consent-gated, memory-only, and outside the MCP surface. It is never installed
+  or invoked by the MCP server.
+- Research artifacts follow the bench protocol: a first-party id, a registry
+  row, a log entry, and an evidence entry before any result is claimed.
 
 Read [SECURITY.md](SECURITY.md) and [docs/THREAT_MODEL.md](docs/THREAT_MODEL.md).
 
@@ -135,6 +197,12 @@ Alpha. Device discovery, policy, root probe, bounded shell, audit and MCP stdio
 are implemented and unit-tested. TCP tether is implemented through ADB and has
 not been hardware-verified in this repository yet. Root providers beyond `su`
 and `adb root` are adapters, not bundled exploits.
+
+A debug-only device payload runner (`dev.lanyard.payload`, 0.2.0 Compose
+rewrite) is built and installed on the lab A52. Its exact-target gate,
+hold-to-arm consent sheet, classified log, both themes and native relay probe
+were verified on 2026-11-24; the page-cache write was deliberately not triggered
+during deployment. See [device-app/README.md](device-app/README.md).
 
 ## License
 

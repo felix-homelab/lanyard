@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lint>
+    <!-- IpSecAlgorithm accepts documented algorithm strings such as "cbc(aes)"
+         and "hmac(sha256)"; lint's StringDef check misreads the String
+         constructor. Scoped to the vendored relay, which is not ours to reshape. -->
+    <issue id="WrongConstant">
+        <ignore path="src/main/java/dev/lanyard/payload/PageCacheChain.java" />
+    </issue>
+    <!-- arm64-v8a is the only ABI the verified payload and relay support. -->
+    <issue id="ChromeOsAbiSupport" severity="ignore" />
+</lint>

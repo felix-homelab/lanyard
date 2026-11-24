@@ -8,3 +8,13 @@ dist/
 .DS_Store
 .idea/
 .vscode/
+
+# Android lab runner build output and machine-local SDK path.
+device-app/local.properties
+device-app/.gradle/
+device-app/.kotlin/
+device-app/.cxx/
+device-app/app/.cxx/
+device-app/build/
+device-app/app/build/
+device-app/*.iml

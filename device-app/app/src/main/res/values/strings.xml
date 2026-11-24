@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lanyard Payload Runner</string>
+
+    <!-- Console -->
+    <string name="console_eyebrow">Lanyard / Lab</string>
+    <string name="console_title">Payload Runner</string>
+    <string name="console_subtitle">Stages the Open Crown page-cache relays on an exact verified target. One boot, reboot clears, never automatic.</string>
+    <string name="console_warning_title">Quarantined research payload</string>
+    <string name="console_warning_body">This writes a kernel page-cache patch into a root-executed library. The init relay never returns to init, so the next init log can consume the logging thread and the phone may watchdog-reset. It is memory-only and disappears at reboot. Run it only on the verified lab device, and only with a recovery path.</string>
+
+    <string name="gate_label">Target gate</string>
+    <string name="gate_booting">Reading device facts…</string>
+    <string name="gate_verified">Verified</string>
+    <string name="gate_compatible">Compatible, untested</string>
+    <string name="gate_unsupported">Unsupported</string>
+    <string name="gate_broken">Manifest unavailable</string>
+    <string name="gate_verified_hint">Exact manifest row matched. Hold a payload to arm it.</string>
+    <string name="gate_blocked_hint">A payload that does not match this exact device, build and kernel must not run. The arm controls stay inert.</string>
+    <string name="gate_boot_hint">The runner is inert until the manifest and device facts load.</string>
+
+    <string name="device_label">This device</string>
+    <string name="device_model">Model</string>
+    <string name="device_name">Device</string>
+    <string name="device_build">Build</string>
+    <string name="device_kernel">Kernel</string>
+    <string name="device_android">Android</string>
+    <string name="device_android_value">%1$s / SDK %2$d</string>
+    <string name="device_abi">ABI</string>
+    <string name="device_unavailable">Device facts could not be read.</string>
+
+    <string name="payload_init_title">Init relay</string>
+    <string name="payload_init_meta">payload.bin · init domain</string>
+    <string name="payload_init_body">Patches libbase ~LogMessage. The relay activates on the next init LOG after you trigger it from ADB.</string>
+    <string name="payload_bt_title">Bluetooth read relay</string>
+    <string name="payload_bt_meta">payload_bt_read.bin · bluetooth domain</string>
+    <string name="payload_bt_body">Patches the gatt_act_read entry in libbluetooth_jni.so. Code execution needs a live GATT read; this runner performs no Bluetooth I/O.</string>
+    <string name="arm_label">Hold to arm</string>
+    <string name="arm_hint">HOLD 1.5 S</string>
+    <string name="arm_running">Run in flight</string>
+
+    <string name="relay_label">Relay status</string>
+    <string name="relay_init_marker">init marker /dev/.dfi</string>
+    <string name="relay_init_socket">init socket @dfi_init</string>
+    <string name="relay_bt_marker">BT marker /dev/.dfib</string>
+    <string name="relay_bt_socket">BT socket @dfi_bt</string>
+    <string name="relay_refresh">Refresh</string>
+    <string name="relay_probe">Probe native relay</string>
+    <string name="relay_note">The app domain may be denied /proc/net/unix. Confirm both sockets from the shell domain.</string>
+
+    <string name="marker_present">present</string>
+    <string name="marker_present_denied">present, stat denied</string>
+    <string name="marker_absent">absent</string>
+    <string name="marker_error">unreadable</string>
+    <string name="marker_unknown">unknown</string>
+    <string name="socket_listening">listening</string>
+    <string name="socket_absent">absent</string>
+    <string name="socket_unreadable">unreadable</string>
+
+    <string name="run_verified_title">Verified page-cache write</string>
+    <string name="run_verified_body">The relay is staged, not triggered. The trigger stays outside this app.</string>
+    <string name="run_not_verified_title">No verified write</string>
+    <string name="run_not_verified_body">The relay ran but did not report a verified page-cache write.</string>
+    <string name="run_failed_title">Run failed</string>
+    <string name="run_failed_body">Nothing was staged. The log has the failure.</string>
+    <string name="run_open_log">Open log</string>
+    <string name="run_dismiss">Dismiss</string>
+
+    <!-- Consent -->
+    <string name="consent_title">Execute %1$s?</string>
+    <string name="consent_intro">This writes a kernel page-cache patch on the verified lab device. It is not a general-purpose root tool and it is not reversible without a reboot.</string>
+    <string name="consent_row_payload">Payload</string>
+    <string name="consent_row_entry">Entry</string>
+    <string name="consent_row_family">Family</string>
+    <string name="consent_row_capabilities">Capabilities</string>
+    <string name="consent_row_persistence">Persistence</string>
+    <string name="consent_row_target">Target</string>
+    <string name="consent_persistence_value">%1$s, reboot clears</string>
+    <string name="consent_risk_title">Reset risk</string>
+    <string name="consent_risk_body">The init relay never returns to init. The next init log can consume the logging thread and the phone may watchdog-reset. Memory-only; reboot clears.</string>
+    <string name="consent_init_extra">After a verified write, trigger init from the workstation:\n\nadb shell setprop ctl.start zzz\n\nThe command may hang once the relay is live. The app cannot connect to @dfi_init; the shell domain can. The relay may watchdog-reset the phone.</string>
+    <string name="consent_bt_extra">The write alone does not execute code. A readable GATT peripheral and a live gatt_act_read are required. After the write, check /dev/.dfib and @dfi_bt from the shell domain. This app does not connect to Bluetooth.</string>
+    <string name="consent_eyebrow">Consent</string>
+    <string name="consent_cancel">Cancel</string>
+    <string name="consent_confirm">Run payload</string>
+
+    <!-- Log -->
+    <string name="log_title">Run log</string>
+    <string name="log_subtitle">Every line the native relay emits, classified.</string>
+    <string name="log_empty">No payload has run in this process.</string>
+    <string name="log_empty_hint">A run writes its native output here and survives rotation.</string>
+    <string name="log_copy">Copy</string>
+    <string name="log_save">Save</string>
+    <string name="log_clear">Clear</string>
+    <string name="log_follow">Follow</string>
+    <string name="log_copied">Log copied</string>
+    <string name="log_saved">Log saved to %1$s</string>
+    <string name="log_clear_refused">The log cannot be cleared while a run is in flight.</string>
+    <plurals name="log_dropped">
+        <item quantity="one">%1$d older line was dropped.</item>
+        <item quantity="other">%1$d older lines were dropped.</item>
+    </plurals>
+    <string name="log_idle">Idle</string>
+    <string name="log_running">Running %1$s</string>
+    <string name="log_finished">Finished %1$s</string>
+    <string name="level_info">info</string>
+    <string name="level_ok">OK</string>
+    <string name="level_warn">warn</string>
+    <string name="level_fail">fail</string>
+
+    <!-- About -->
+    <string name="about_title">About</string>
+    <string name="about_subtitle">What this build is, what it can do, and what it cannot.</string>
+    <string name="about_build">This build</string>
+    <string name="about_version">%1$s (%2$d)</string>
+    <string name="about_package">Package</string>
+    <string name="about_provenance">Provenance</string>
+    <string name="about_target">Device record</string>
+    <string name="about_device_manufacturer">Manufacturer</string>
+    <string name="about_device_brand">Brand</string>
+    <string name="about_device_product">Product</string>
+    <string name="about_device_board">Board</string>
+    <string name="about_device_soc">SoC</string>
+    <string name="about_device_bootloader">Bootloader</string>
+    <string name="about_device_build_id">Build ID</string>
+    <string name="about_device_incremental">Incremental</string>
+    <string name="about_device_security_patch">Security patch</string>
+    <string name="about_device_build_type">Build type</string>
+    <string name="about_device_selinux">App domain</string>
+    <string name="about_device_capture">Captured from Build and /proc/self/attr/current. The serial and the global SELinux mode are not readable from the app; take them from adb with get-serialno and getenforce.</string>
+    <string name="about_digests">Payload digests</string>
+    <string name="about_digest_hint">SHA-256 computed from the packaged assets.</string>
+    <string name="about_limits">Limits</string>
+    <string name="about_limits_body">One verified device row. The app stages the relay but never consumes it. The relay is an unauthenticated raw-syscall RPC that never returns to init; treat it as a measured research artifact. The debug certificate is not a distribution identity, and a release build should not ship this artifact without a separate review.</string>
+    <string name="about_utils">Debug utilities</string>
+    <string name="about_utils_manifest">Manifest JSON</string>
+    <string name="about_utils_lastrun">last_run.json</string>
+    <string name="about_utils_probe">Probe native relay</string>
+    <string name="about_utils_trigger">Copy ADB trigger</string>
+    <string name="about_utils_copy_facts">Copy device facts</string>
+    <string name="copied_device_facts">Device facts copied</string>
+    <string name="about_utils_command">adb shell run-as dev.lanyard.payload cat files/last_run.json</string>
+    <string name="about_utils_note">The status file is readable from the workstation:\n%1$s</string>
+    <string name="about_attribution">Attribution</string>
+    <string name="about_attribution_body">Payloads and native relay vendored from Open Crown at commit fcaadff4c1a75da05ba0cb1736f69d0037d239ef (MIT). Exploit logic and payload bytes are unchanged.</string>
+    <string name="about_sheet_close">Close</string>
+    <string name="about_loading">Reading…</string>
+    <string name="about_unavailable">Unavailable on this build.</string>
+
+    <!-- Shell -->
+    <string name="nav_console">Console</string>
+    <string name="nav_log">Log</string>
+    <string name="nav_about">About</string>
+    <string name="snackbar_run_finished">Run finished. The log has the detail.</string>
+    <string name="snackbar_run_in_flight">A run is already in flight.</string>
+    <string name="copied_trigger">Copied: %1$s</string>
+    <string name="about_version_label">Version</string>
+    <string name="warning_expand">Full warning</string>
+    <string name="warning_collapse">Show less</string>
+    <string name="run_running_title">Run in flight</string>
+    <string name="run_running_body">The native relay is staging the payload. Do not leave the device.</string>
+</resources>
